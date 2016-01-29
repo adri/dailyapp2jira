@@ -4,6 +4,7 @@ const request = require('request-promise');
 const inquirer = require('inquirer-promise');
 const sink = require('stream-sink');
 require('dotenv').load();
+
 const argv = require('yargs')
   .usage('Usage: $0 dailytimeapp-export.csv [--quiet]')
   .option('quiet', {
@@ -137,8 +138,7 @@ function missingInfo(worklog) {
  * @param worklog
  */
 function postWorklogToJira(worklog) {
-  //return request({
-  return Promise.resolve({
+  return request({
       method: 'POST',
       uri: process.env.JIRA_ISSUE + worklog.number + '/worklog',
       headers: {
