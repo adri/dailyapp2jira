@@ -1,0 +1,38 @@
+{
+  "name": "dailyapp2jira",
+  "version": "1.0.0",
+  "description": "Pushes Daily Time App (https://dailytimeapp.com) CSV exports to JIRA",
+  "main": "index",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adri/google-sheets-to-jira.git"
+  },
+  "keywords": [
+    "jira",
+    "dailytime",
+    "timetracking",
+    "converter",
+    "integration",
+    "terminal"
+  ],
+  "author": "Adrian Philipp <mail@adrian-philipp.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/adri/google-sheets-to-jira/issues"
+  },
+  "homepage": "https://github.com/adri/google-sheets-to-jira#readme",
+  "dependencies": {
+    "csv": "^0.4.6",
+    "dotenv": "^2.0.0",
+    "inquirer": "^0.11.4",
+    "inquirer-promise": "0.0.3",
+    "jira-connector": "^1.11.0",
+    "lodash": "^4.1.0",
+    "request-promise": "^2.0.0",
+    "stream-sink": "^1.2.0",
+    "yargs": "^3.32.0"
+  }
+}
