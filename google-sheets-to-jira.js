@@ -6,6 +6,8 @@ var CELL_TOTAL_TITLE = 'E3';
 var CELL_TOTAL = 'D3';
 var CELL_DATE = 'B6';
 
+var REST_JIRA_ISSUE = '...';
+var REST_JIRA_TOKEN = '...';
 // {issueIdOrKey}/worklog
 
 function onOpen() {
