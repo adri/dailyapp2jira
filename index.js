@@ -6,10 +6,11 @@ const sink = require('stream-sink');
 require('dotenv').load();
 
 const argv = require('yargs')
-  .usage('Usage: $0 dailytimeapp-export.csv [--quiet]')
+  .usage('Pushes Daily Time App (https://dailytimeapp.com) CSV exports to JIRA')
+  .example('dailyapp2jira Daily\ Export\ \(29:01:16\ -\ 29:01:16\).csv')
   .option('quiet', {
     alias: 'q',
-    default: false,
+    default: !process.stdin.isTTY,
     describe: "Don't ask for confirmation"
   })
   .option('delimiter', {
@@ -17,11 +18,12 @@ const argv = require('yargs')
     default: ',',
     describe: 'Delimiter used for the CSV'
   })
-
-  .demand(1)
+  .demand(process.stdin.isTTY ? 1 : 0)
   .argv;
 
-fs.createReadStream(argv._[0])
+const inStream = argv._[0] ? fs.createReadStream(argv._[0]) : process.stdin;
+
+inStream
   .pipe(csv.parse({ delimiter: ',', comment: '#', columns: ['activity', 'timeInMinutes'] }))
   .pipe(csv.transform(parseCsvRecord))
   .pipe(sink({ objectMode: true }))
@@ -135,19 +137,20 @@ function missingInfo(worklog) {
 /**
  * Post a single work log to jira.
  *
- * @param worklog
+ * @param log Single work log.
  */
-function postWorklogToJira(worklog) {
-  return request({
+function postWorklogToJira(log) {
+  //return request({
+  return Promise.resolve({
       method: 'POST',
-      uri: process.env.JIRA_ISSUE + worklog.number + '/worklog',
+      uri: process.env.JIRA_ISSUE + log.number + '/worklog',
       headers: {
         Authorization: 'Basic ' + process.env.JIRA_TOKEN
       },
       body: {
-        started: worklog.date + 'T18:00:00.201+0000',
-        timeSpent: worklog.timeInMinutes + 'm',
-        comment: worklog.description
+        started: log.date + 'T18:00:00.201+0000',
+        timeSpent: log.timeInMinutes + 'm',
+        comment: log.description
       },
       json: true,
     });
@@ -180,4 +183,3 @@ function dumpWorklog(worklog, console) {
     )
     .map(log => console.log(log));
 }
-
