@@ -140,8 +140,8 @@ function missingInfo(worklog) {
  * @param log Single work log.
  */
 function postWorklogToJira(log) {
-  //return request({
-  return Promise.resolve({
+  return request({
+  //return Promise.resolve({
       method: 'POST',
       uri: process.env.JIRA_ISSUE + log.number + '/worklog',
       headers: {
