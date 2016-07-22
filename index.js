@@ -182,4 +182,9 @@ function dumpWorklog(worklog, console) {
       ].join("\t")
     )
     .map(log => console.log(log));
+
+  totalMins = worklog.reduce(function (pre, cur) { return pre + parseInt(cur.timeInMinutes); }, 0);
+  totalHours = totalMins / 60
+
+  console.log("Total hours: " + totalHours);
 }
