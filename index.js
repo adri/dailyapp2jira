@@ -141,15 +141,17 @@ function missingInfo(worklog) {
  */
 function postWorklogToJira(log) {
   return request({
-  //return Promise.resolve({
       method: 'POST',
-      uri: process.env.JIRA_ISSUE + log.number + '/worklog',
+      uri: process.env.TEMPO_WORKLOGS_BASE + 'worklogs/',
       headers: {
         Authorization: 'Basic ' + process.env.JIRA_TOKEN
       },
       body: {
-        started: log.date + 'T18:00:00.201+0000',
-        timeSpent: log.timeInMinutes + 'm',
+        issue: {
+            key: log.number,
+        },
+        dateStarted: log.date + 'T18:00:00.201+0000',
+        timeSpentSeconds: log.timeInMinutes * 60,
         comment: log.description
       },
       json: true,
