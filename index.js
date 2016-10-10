@@ -151,7 +151,7 @@ function postWorklogToJira(log) {
           key: log.number,
         },
         author: {
-          name: "aphilipp"
+          name: process.env.JIRA_USER,
         },
         dateStarted: log.date + 'T18:00:00.000+0000',
         timeSpentSeconds: log.timeInMinutes * 60,
