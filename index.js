@@ -30,7 +30,7 @@ inStream
   .on('data', worklog => checkWorklog(worklog)
     .then(askForConfirmation)
     .then(submitToJira)
-    .catch(err => console.log(err.message))
+    .catch(err => console.log(err.message, JSON.stringify(err)))
   )
   .on('error', err => { throw new Error(err) });
 
@@ -108,7 +108,7 @@ function askForConfirmation(worklog) {
  * @returns {Object} Issue number and description.
  */
 function parseIssue(text) {
-  var issue = /([A-Z]{2,10}-\d{1,5})(.*)/.exec(text);
+  var issue = /([A-Z0-9]{2,10}-\d{1,5})(.*)/.exec(text);
 
   if (!issue) {
     return { number: null, description: text };
@@ -142,16 +142,20 @@ function missingInfo(worklog) {
 function postWorklogToJira(log) {
   return request({
       method: 'POST',
-      uri: process.env.TEMPO_WORKLOGS_BASE + 'worklogs/',
+      uri: process.env.TEMPO_BASE + 'worklogs/',
       headers: {
         Authorization: 'Basic ' + process.env.JIRA_TOKEN
       },
       body: {
         issue: {
-            key: log.number,
+          key: log.number,
         },
-        dateStarted: log.date + 'T18:00:00.201+0000',
+        author: {
+          name: "aphilipp"
+        },
+        dateStarted: log.date + 'T18:00:00.000+0000',
         timeSpentSeconds: log.timeInMinutes * 60,
+        billedSeconds: 0,
         comment: log.description
       },
       json: true,
@@ -164,7 +168,7 @@ function postWorklogToJira(log) {
 function convertDate(date) {
   var part = date.split('/');
 
-  return ["20" + part[2], part[1], part[0]].join('-');
+  return [part[2], part[1], part[0]].join('-');
 }
 
 /**
